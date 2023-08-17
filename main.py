@@ -8,7 +8,7 @@ draw = mp.solutions.drawing_utils
 
 
 def is_pinky_up(hand_landmarks):
-    return hand_landmarks[20].y + 0.05 < hand_landmarks[19].y
+    return hand_landmarks[20].y <= hand_landmarks[19].y
 
 
 def is_ring_up(hand_landmarks):
@@ -27,28 +27,28 @@ def is_thumb_up(hand_landmarks):
     return hand_landmarks[4].y + 0.05 < hand_landmarks[3].y
 
 
-def is_index_finger_turn_right(hand_landmarks):
-    return hand_landmarks[8].x - hand_landmarks[7].x <= 0.05
+def is_index_finger_horithontal(hand_landmarks):
+    return hand_landmarks[8].y - hand_landmarks[5].y <= 0.05
 
 
-def is_index_middle_finger_down(hand_landmarks):
+def is_index_finger_down(hand_landmarks):
     return hand_landmarks[8].x - hand_landmarks[5].x <= 0.06 and hand_landmarks[8].y - hand_landmarks[5].y <= 0.06
 
 
 def is_index_thumb_fingers_down(hand_landmarks):
-    return hand_landmarks[8].y - hand_landmarks[4].y <= 0.05
+    return hand_landmarks[8].y >= hand_landmarks[7].y and hand_landmarks[4].y >= hand_landmarks[3].y
 
 def is_index_finger_turn_left(hand_landmarks):
     return hand_landmarks[8].x < hand_landmarks[7].x
 
 def is_middle_finger_down(hand_landmarks):
-    return hand_landmarks[12].y > hand_landmarks[11].y
+    return hand_landmarks[12].y > hand_landmarks[9].y
 
 def is_middle_finger_pinky(hand_landmarks):
-    return hand_landmarks[12].y - hand_landmarks[20].y <= 0.05
+    return abs(hand_landmarks[12].x - hand_landmarks[20].x) <= 0.05
 
 def is_pinky_ring_finger(hand_landmarks):
-    return hand_landmarks[20].y - hand_landmarks[15].y <= 0.05
+    return abs(hand_landmarks[20].y - hand_landmarks[15].y) <= 0.05
 
 while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -70,11 +70,10 @@ while True:
                             draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
                 elif is_middle_finger_pinky(handLms.landmark): # C O
-                    if abs(handLms.landmark[8].x - handLms.landmark[4].x) <= 0.05:
-                        if is_letter.is_c_gesture(handLms.landmark):
+
+                        if is_letter.is_o_gesture(handLms.landmark):
                             draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                    else:
-                        if is_letter.is_c_gesture(handLms.landmark):
+                        elif is_letter.is_c_gesture(handLms.landmark):
                             draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
 
@@ -82,10 +81,7 @@ while True:
                     if abs(handLms.landmark[4].x - handLms.landmark[8].x) <= 0.05:
                         if is_letter.is_f_gesture(handLms.landmark):
                                 draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                    elif (
-
-                    ):
-                        if is_letter.is_b_gesture(handLms.landmark):
+                        elif is_letter.is_b_gesture(handLms.landmark):
                             draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
             elif is_ring_up(handLms.landmark):  # отсекаем только W
@@ -117,6 +113,7 @@ while True:
                     if is_letter.is_l_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
+
             elif is_thumb_up(handLms.landmark):  # A,T,S
                 if handLms.landmark[4].x < handLms.landmark[6].x:
                     if is_letter.is_a_gesture(handLms.landmark):
@@ -127,18 +124,19 @@ while True:
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
 
-            elif is_index_finger_turn_right(handLms.landmark):  # Отсев G,H,P
-                if ((handLms.landmark[12].y > handLms.landmark[11].y)
-                ):
+            elif is_index_finger_horithontal(handLms.landmark):  # Отсев G,H,P
+                if handLms.landmark[12].y > handLms.landmark[11].y:
                     if is_letter.is_p_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                if (handLms.landmark[12].x > handLms.landmark[8].x):
+                elif handLms.landmark[12].x > handLms.landmark[8].x:
                     if is_letter.is_h_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
                 else:
                     if is_letter.is_g_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-            elif is_index_middle_finger_down(handLms.landmark):  # отсев E,M,N
+
+
+            elif is_index_finger_down(handLms.landmark):  # отсев E,M,N
                 if ((handLms.landmark[20].x - handLms.landmark[17].x <= 0.05) and
                         (handLms.landmark[20].y - handLms.landmark[17].y <= 0.05)):
                     if is_letter.is_e_gesture(handLms.landmark):
