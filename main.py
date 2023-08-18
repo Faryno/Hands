@@ -1,282 +1,54 @@
 import cv2
 import mediapipe as mp
+import is_letter
 
 cap = cv2.VideoCapture(0)
 hands = mp.solutions.hands.Hands(max_num_hands=1)
 draw = mp.solutions.drawing_utils
 
 
-# def is_o_gesture(hand_landmarks):
-#     y_threshold = 0.07  # Порог для определения примерной одной высоты
-#     x_threshold = 0.07  # Порог для определения примерной одной высоты
-#     y_positions = [hand_landmarks[i].y for i in [4, 8, 12, 16, 20]]
-#     x_positions = [hand_landmarks[i].x for i in [4, 8, 12, 16, 20]]
-#     min_y = min(y_positions)
-#     max_y = max(y_positions)
-#     min_x = min(x_positions)
-#     max_x = max(x_positions)
-#     if max_y - min_y < y_threshold
-#        and max_x - min_x < x_threshold: return True
+def is_pinky_up(hand_landmarks):
+    return hand_landmarks[20].y <= hand_landmarks[19].y
 
 
-# def is_a_gesture(hand_landmarks):
-#     y_threshold = 0.07  # Порог для определения примерной одной высоты
-#     x_threshold = 0.07  # Порог для определения примерной одной высоты
-#     y_positions = [hand_landmarks[i].y for i in [4, 6, 10, 14, 18]]
-#     x_positions = [hand_landmarks[i].x for i in [4, 6, 10, 14, 18]]
-#     min_y = min(y_positions)
-#     max_y = max(y_positions)
-#     min_x = min(x_positions)
-#     max_x = max(x_positions)
-#     if max_y - min_y < y_threshold and max_x - min_x > x_threshold: return True
+def is_ring_up(hand_landmarks):
+    return hand_landmarks[16].y + 0.05 < hand_landmarks[15].y
 
-# def is_b_gesture(hand_landmarks):
-#     x_threshold = 0.01
-#     y_threshold = 0.05
-#
-#     thumb_x_4 = hand_landmarks[4].x
-#     index_finger_x_8 = hand_landmarks[8].x
-#     middle_finger_x_12 = hand_landmarks[12].x
-#     ring_finger_x_16 = hand_landmarks[16].x
-#     pinky_x_20 = hand_landmarks[20].x
-#
-#     thumb_y_4 = hand_landmarks[4].y
-#     index_finger_y_8 = hand_landmarks[8].y
-#     middle_finger_y_12 = hand_landmarks[12].y
-#     ring_finger_y_16 = hand_landmarks[16].y
-#     pinky_y_20 = hand_landmarks[20].y
-#
-#     index_finger_x_7 = hand_landmarks[7].x
-#     middle_finger_x_11 = hand_landmarks[11].x
-#     ring_finger_x_15 = hand_landmarks[15].x
-#     pinky_x_19 = hand_landmarks[19].x
-#
-#     index_finger_y_7 = hand_landmarks[7].y
-#     middle_finger_y_11 = hand_landmarks[11].y
-#     ring_finger_y_15 = hand_landmarks[15].y
-#     pinky_y_19 = hand_landmarks[19].y
-#
-#     ring_finger_x_13 = hand_landmarks[13].x
-#     ring_finger_y_13 = hand_landmarks[13].y
-#     print(index_finger_y_8, index_finger_y_7)
-#     if (
-#         (abs(thumb_y_4 - ring_finger_y_13) < (y_threshold)) and
-#         (index_finger_y_7 > index_finger_y_8) and
-#         (middle_finger_y_11 > middle_finger_y_12) and
-#         (ring_finger_y_15 > ring_finger_y_16) and
-#         (pinky_y_19 > pinky_y_20) and
-#         (abs(thumb_x_4 - ring_finger_x_13) < x_threshold) and
-#         abs(index_finger_x_8 - index_finger_x_7) <= x_threshold and
-#         abs(middle_finger_x_12 - middle_finger_x_11) <= x_threshold and
-#         abs(ring_finger_x_16 - ring_finger_x_15) <= x_threshold and
-#         abs(pinky_x_20 - pinky_x_19) <= x_threshold
-#     ):
-#         return True
-#
-#     return False
 
-# def is_c_gesture(hand_landmarks):
-#     x_threshold = 0.01
-#     y_threshold = 0.05
-#
-#     thumb_y_4 = hand_landmarks[4].y
-#     index_finger_y_8 = hand_landmarks[8].y
-#     middle_finger_y_12 = hand_landmarks[12].y
-#     ring_finger_y_16 = hand_landmarks[16].y
-#     ring_finger_y_15 = hand_landmarks[15].y
-#     pinky_y_20 = hand_landmarks[20].y
-#     pyatka_y_0 = hand_landmarks[0].y
-#
-#     if (
-#         (abs(thumb_y_4 - pyatka_y_0 <= y_threshold)) and
-#         (abs(index_finger_y_8 - middle_finger_y_12 <= y_threshold)) and
-#         (abs(middle_finger_y_12 - ring_finger_y_16 <= y_threshold)) and
-#         (abs(ring_finger_y_15 - pinky_y_20 <= y_threshold)) and
-#         (abs(index_finger_y_8 - ring_finger_y_16 <= y_threshold)) and
-#         (index_finger_y_8 < pinky_y_20)
-#
-#     ):
-#         return True
-#
-#     return False
+def is_middle_up(hand_landmarks):
+    return hand_landmarks[12].y + 0.05 < hand_landmarks[11].y
 
-# def is_d_gesture(hand_landmarks):
-#     y_threshold = 0.07
-#     index_finger_y_8 = hand_landmarks[8].y
-#     index_finger_y_7 = hand_landmarks[7].y
-#     pyatka_y_0 = hand_landmarks[0].y
-#     thumb_x_4 = hand_landmarks[4].x
-#     index_finger_x_8 = hand_landmarks[8].x
-#     y_positions = [hand_landmarks[i].y for i in [4, 12, 16, 20]]
-#     min_y = min(y_positions)
-#     max_y = max(y_positions)
-#     if(
-#
-#         (max_y - min_y < y_threshold) and
-#         (index_finger_y_8 < max_y) and
-#         (abs(index_finger_y_7 - index_finger_y_8 <= y_threshold) > pyatka_y_0) and
-#         (thumb_x_4 >= index_finger_x_8)
-#     ):
-#         return True
-#
-#     return False
 
-# def is_e_gesture(hand_landmarks):
-#     y_threshold = 0.05
-#
-#     thumb_y_4 = hand_landmarks[4].y
-#     thumb_x_4 = hand_landmarks[4].x
-#     index_finger_y_8 = hand_landmarks[8].y
-#     middle_finger_y_12 = hand_landmarks[12].y
-#     ring_finger_y_16 = hand_landmarks[16].y
-#     pinky_y_20 = hand_landmarks[20].y
-#     index_finger_y_5 = hand_landmarks[5].y
-#     middle_finger_y_9 = hand_landmarks[9].y
-#     ring_finger_y_13 = hand_landmarks[13].y
-#     index_finger_x_5 = hand_landmarks[5].x
-#     pinky_y_17 = hand_landmarks[17].y
-#
-#     if (
-#         (abs(index_finger_y_5 - index_finger_y_8 <= y_threshold))and
-#         (abs(middle_finger_y_9 - middle_finger_y_12 <= y_threshold)) and
-#         (abs(ring_finger_y_13 - ring_finger_y_16 <= y_threshold)) and
-#         (abs(pinky_y_17 - pinky_y_20 <= y_threshold)) and
-#         (abs(ring_finger_y_13 - thumb_y_4 <= y_threshold)) and
-#         (abs(thumb_x_4 > index_finger_x_5))
-#     ):
-#         return True
-#
-#     return False
+def is_index_up(hand_landmarks):
+    return hand_landmarks[8].y + 0.05 < hand_landmarks[7].y
 
-# def is_g_gesture(hand_landmarks):
-#     x_threshold = 0.03
-#
-#     index_finger_x_8 = hand_landmarks[8].x
-#     middle_finger_x_12 = hand_landmarks[12].x
-#     x_positions = [hand_landmarks[i].x for i in [4, 10, 14, 18]]
-#     min_x = min(x_positions)
-#     max_x = max(x_positions)
-#
-#     if (
-#         (middle_finger_x_12 < index_finger_x_8) and
-#         (max_x - min_x < x_threshold)
-#     ):
-#         return 1
-#     return False
 
-# def is_h_gesture(hand_landmarks):
-#     x_threshold = 0.07
-#
-#     index_finger_x_8 = hand_landmarks[8].x
-#     middle_finger_x_12 = hand_landmarks[12].x
-#     thumb_4 = hand_landmarks[4].x
-#     x_positions = [hand_landmarks[i].x for i in [4, 10, 14, 18]]
-#     min_x = min(x_positions)
-#     max_x = max(x_positions)
-#
-#     if (
-#         (middle_finger_x_12 > index_finger_x_8) and
-#         (index_finger_x_8 > thumb_4) and
-#         (max_x - min_x < x_threshold)
-#
-#     ):
-#         return True
-#     return False
+def is_thumb_up(hand_landmarks):
+    return hand_landmarks[4].y + 0.05 < hand_landmarks[3].y
 
-# def is_i_gesture(hand_landmarks):
-#     y_threshold = 0.05  # Порог для определения примерной одной высоты
-#     x_threshold = 0.05  # Порог для определения примерной одной высоты
-#     pinky_y_20 = hand_landmarks[20].y
-#     pinky_y_19 = hand_landmarks[19].y
-#     y_positions = [hand_landmarks[i].y for i in [4, 6, 10, 14]]
-#     x_positions = [hand_landmarks[i].x for i in [4, 6, 10, 14]]
-#     min_y = min(y_positions)
-#     max_y = max(y_positions)
-#     min_x = min(x_positions)
-#     max_x = max(x_positions)
-#
-#
-#
-#     if ((max_y - min_y < y_threshold) and
-#         (max_x - min_x > x_threshold) and
-#         (pinky_y_19 - pinky_y_20 <= y_threshold)
-#
-#
-#     ):
-#         return True
-#     return False
 
-# def is_l_gesture(hand_landmarks):
-#     y_threshold = 0.05  # Порог для определения примерной одной высоты
-#     x_threshold = 0.05  # Порог для определения примерной одной высоты
-#
-#     thumb_y_4 = hand_landmarks[4].y
-#     thumb_x_4 = hand_landmarks[4].x
-#     middle_finger_y_12 = hand_landmarks[12].y
-#     # ring_finger_y_14 = hand_landmarks[14].y
-#     index_finger_x_8 = hand_landmarks[8].x
-#     index_finger_y_8 = hand_landmarks[8].y
-#     index_finger_y_7 = hand_landmarks[7].y
-#     index_finger_y_5 = hand_landmarks[5].y
-#
-#     if (
-#         (abs(index_finger_x_8 - thumb_x_4 <= x_threshold)) and
-#         (abs(middle_finger_y_12 - thumb_y_4 <= y_threshold)) and
-#         (abs(index_finger_y_8 - index_finger_y_7 <= y_threshold)) and
-#         (abs(index_finger_y_5 - middle_finger_y_12 < y_threshold))
-#
-#     ):
-#         return True
-#     return False
+def is_index_finger_horithontal(hand_landmarks):
+    return hand_landmarks[8].y - hand_landmarks[5].y <= 0.05
 
-# def is_m_gesture(hand_landmarks):
-#     y_threshold = 0.08  # Порог для определения примерной одной высоты
-#     x_threshold = 0.08  # Порог для определения примерной одной высоты
-#     y_positions = [hand_landmarks[i].y for i in [5, 9, 13, 8, 12, 16]]
-#     x_positions = [hand_landmarks[i].x for i in [5, 9, 13, 8, 12, 16]]
-#     ring_finger_y_13 = hand_landmarks[13].y
-#     ring_finger_x_13 = hand_landmarks[13].x
-#     thumb_y_4 = hand_landmarks[4].y
-#     thumb_x_4 = hand_landmarks[4].x
-#     pinky_y_20 = hand_landmarks[20].y
-#     min_y = min(y_positions)
-#     max_y = max(y_positions)
-#     min_x = min(x_positions)
-#     max_x = max(x_positions)
-#     if (
-#         (max_y - min_y < y_threshold) and
-#         (max_x - min_x > x_threshold) and
-#         (abs(thumb_y_4 - ring_finger_y_13 <= y_threshold)) and
-#         (abs(ring_finger_x_13 - thumb_x_4 <= x_threshold)) and
-#         (abs(pinky_y_20 > ring_finger_y_13 ))
-#     ):
-#         return True
 
-def is_n_gesture(hand_landmarks):
-    y_threshold = 0.08  # Порог для определения примерной одной высоты
+def is_index_finger_down(hand_landmarks):
+    return hand_landmarks[8].x - hand_landmarks[5].x <= 0.06 and hand_landmarks[8].y - hand_landmarks[5].y <= 0.06
 
-    x_threshold = 0.08  # Порог для определения примерной одной высоты
-    y_positions = [hand_landmarks[i].y for i in [5, 8, 9, 12]]
-    x_positions = [hand_landmarks[i].x for i in [5, 8, 9, 12]]
-    middle_finger_y_13 = hand_landmarks[13].y
-    middle_finger_x_13 = hand_landmarks[13].x
-    thumb_y_4 = hand_landmarks[4].y
-    thumb_x_4 = hand_landmarks[4].x
-    pinky_y_20 = hand_landmarks[20].y
-    min_y = min(y_positions)
-    max_y = max(y_positions)
-    min_x = min(x_positions)
-    max_x = max(x_positions)
-    if (
-        (max_y - min_y <= y_threshold)
-            and
-        (max_x - min_x >= x_threshold)
-            and
-        (abs(thumb_y_4 - middle_finger_y_13 <= y_threshold)) and
-        (abs(middle_finger_x_13 - thumb_x_4 <= x_threshold))
-    ):
-        return True
 
+def is_index_thumb_fingers_down(hand_landmarks):
+    return hand_landmarks[8].y >= hand_landmarks[7].y and hand_landmarks[4].y >= hand_landmarks[3].y
+
+def is_index_finger_turn_left(hand_landmarks):
+    return hand_landmarks[8].x < hand_landmarks[7].x
+
+def is_middle_finger_down(hand_landmarks):
+    return hand_landmarks[12].y > hand_landmarks[9].y
+
+def is_middle_finger_pinky(hand_landmarks):
+    return abs(hand_landmarks[12].x - hand_landmarks[20].x) <= 0.05
+
+def is_pinky_ring_finger(hand_landmarks):
+    return abs(hand_landmarks[20].y - hand_landmarks[15].y) <= 0.05
 
 while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -288,8 +60,108 @@ while True:
 
     if results.multi_hand_landmarks:
         for handLms in results.multi_hand_landmarks:
-            if is_n_gesture(handLms.landmark):
-                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_pinky_up(handLms.landmark):
+                if is_middle_finger_down(handLms.landmark):
+                    if abs(handLms.landmark[4].x - handLms.landmark[6].x) <= 0.05:
+                        if is_letter.is_i_gesture(handLms.landmark):
+                            draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                    else:
+                        if is_letter.is_y_gesture(handLms.landmark):
+                            draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+                elif is_middle_finger_pinky(handLms.landmark): # C O
+
+                        if is_letter.is_o_gesture(handLms.landmark):
+                            draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                        elif is_letter.is_c_gesture(handLms.landmark):
+                            draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+
+                elif is_pinky_ring_finger(handLms.landmark): # B F
+                    if abs(handLms.landmark[4].x - handLms.landmark[8].x) <= 0.05:
+                        if is_letter.is_f_gesture(handLms.landmark):
+                                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                        elif is_letter.is_b_gesture(handLms.landmark):
+                            draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+            elif is_ring_up(handLms.landmark):  # отсекаем только W
+                if is_letter.is_w_gesture(handLms.landmark):
+                    draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+
+            elif is_middle_up(handLms.landmark):  # отсекли R,U,V
+                if abs(handLms.landmark[8].x - handLms.landmark[12].x) >= 0.1:
+                    if is_letter.is_v_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                elif abs(handLms.landmark[8].x - handLms.landmark[12].x) <= 0.025:
+                    if is_letter.is_u_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                else:
+                    if is_letter.is_r_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+            elif is_index_up(handLms.landmark):  # отсекли D,K,L
+                if ((abs(handLms.landmark[16].x - handLms.landmark[4].x) <= 0.05) and
+                        (abs(handLms.landmark[16].y - handLms.landmark[4].y) <= 0.05)):
+                    if is_letter.is_d_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                elif ((abs(handLms.landmark[4].x - handLms.landmark[10].x) <= 0.05) and
+                  (abs(handLms.landmark[4].y - handLms.landmark[10].y) <= 0.05)):
+                    if is_letter.is_k_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                else:
+                    if is_letter.is_l_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+
+            elif is_thumb_up(handLms.landmark):  # A,T,S
+                if handLms.landmark[4].x < handLms.landmark[6].x:
+                    if is_letter.is_a_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                elif (abs(handLms.landmark[4].y - handLms.landmark[10].y <= 0.05) and
+                      (abs(handLms.landmark[4].x - handLms.landmark[10].x <= 0.06))):
+                    if is_letter.is_s_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+
+            elif is_index_finger_horithontal(handLms.landmark):  # Отсев G,H,P
+                if handLms.landmark[12].y > handLms.landmark[11].y:
+                    if is_letter.is_p_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                elif handLms.landmark[12].x > handLms.landmark[8].x:
+                    if is_letter.is_h_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                else:
+                    if is_letter.is_g_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+
+            elif is_index_finger_down(handLms.landmark):  # отсев E,M,N
+                if ((handLms.landmark[20].x - handLms.landmark[17].x <= 0.05) and
+                        (handLms.landmark[20].y - handLms.landmark[17].y <= 0.05)):
+                    if is_letter.is_e_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                elif ((handLms.landmark[16].x - handLms.landmark[13].x <= 0.05) and
+                      (handLms.landmark[16].y - handLms.landmark[13].y <= 0.05)):
+                    if is_letter.is_m_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                else:
+                    if is_letter.is_n_gesture(handLms.landmark):
+                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+
+            elif is_index_thumb_fingers_down(handLms.landmark): # Q
+                if is_letter.is_q_gesture(handLms.landmark):
+                    draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+            elif is_index_finger_turn_left(handLms.landmark):
+                if is_letter.is_t_gesture(handLms.landmark):
+                    draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+            else:
+                if is_letter.is_x_gesture(handLms.landmark): #X
+                    draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
 
     cv2.imshow("Hand Gesture Recognition", image)
 
