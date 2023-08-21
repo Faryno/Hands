@@ -28,7 +28,7 @@ def is_thumb_up(hand_landmarks):
 
 
 def is_index_finger_horithontal(hand_landmarks):
-    return hand_landmarks[8].y - hand_landmarks[5].y <= 0.05
+    return hand_landmarks[8].y - hand_landmarks[5].y <= 0.08
 
 
 def is_index_finger_down(hand_landmarks):
@@ -57,6 +57,8 @@ while True:
     success, image = cap.read()
     image = cv2.flip(image, 1)
     results = hands.process(image)
+
+
 
     if results.multi_hand_landmarks:
         for handLms in results.multi_hand_landmarks:
@@ -93,74 +95,65 @@ while True:
                 if abs(handLms.landmark[8].x - handLms.landmark[12].x) >= 0.1:
                     if is_letter.is_v_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                elif abs(handLms.landmark[8].x - handLms.landmark[12].x) <= 0.025:
-                    if is_letter.is_u_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                else:
-                    if is_letter.is_r_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
-            elif is_index_up(handLms.landmark):  # отсекли D,K,L
+
+
+
+            elif is_index_up(handLms.landmark):  # отсекли D,
                 if ((abs(handLms.landmark[16].x - handLms.landmark[4].x) <= 0.05) and
                         (abs(handLms.landmark[16].y - handLms.landmark[4].y) <= 0.05)):
                     if is_letter.is_d_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                elif ((abs(handLms.landmark[4].x - handLms.landmark[10].x) <= 0.05) and
-                  (abs(handLms.landmark[4].y - handLms.landmark[10].y) <= 0.05)):
-                    if is_letter.is_k_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                else:
-                    if is_letter.is_l_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
 
-            elif is_thumb_up(handLms.landmark):  # A,T,S
-                if handLms.landmark[4].x < handLms.landmark[6].x:
-                    if is_letter.is_a_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                elif (abs(handLms.landmark[4].y - handLms.landmark[10].y <= 0.05) and
+
+            elif is_thumb_up(handLms.landmark):  # A,S
+                if (abs(handLms.landmark[4].y - handLms.landmark[10].y <= 0.05) and
                       (abs(handLms.landmark[4].x - handLms.landmark[10].x <= 0.06))):
                     if is_letter.is_s_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
 
-            elif is_index_finger_horithontal(handLms.landmark):  # Отсев G,H,P
-                if handLms.landmark[12].y > handLms.landmark[11].y:
+            elif is_index_finger_horithontal(handLms.landmark):  # Отсев GP,
+                if handLms.landmark[12].y > handLms.landmark[11].y: # P
                     if is_letter.is_p_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                elif handLms.landmark[12].x > handLms.landmark[8].x:
+                if ((handLms.landmark[12].x > handLms.landmark[8].x) and
+                        (handLms.landmark[12].y < handLms.landmark[11].y)):#H
                     if is_letter.is_h_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                else:
+
+                else: #G
                     if is_letter.is_g_gesture(handLms.landmark):
                         draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
-
-            elif is_index_finger_down(handLms.landmark):  # отсев E,M,N
-                if ((handLms.landmark[20].x - handLms.landmark[17].x <= 0.05) and
-                        (handLms.landmark[20].y - handLms.landmark[17].y <= 0.05)):
-                    if is_letter.is_e_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                elif ((handLms.landmark[16].x - handLms.landmark[13].x <= 0.05) and
-                      (handLms.landmark[16].y - handLms.landmark[13].y <= 0.05)):
-                    if is_letter.is_m_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-                else:
-                    if is_letter.is_n_gesture(handLms.landmark):
-                        draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-
-
-            elif is_index_thumb_fingers_down(handLms.landmark): # Q
-                if is_letter.is_q_gesture(handLms.landmark):
+            if is_letter.is_e(handLms.landmark):
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_m(handLms.landmark):
                     draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_n(handLms.landmark):
+                    draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_a(handLms.landmark):
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_k(handLms.landmark):
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_l(handLms.landmark):
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_x(handLms.landmark):  # X
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_r(handLms.landmark):
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_u(handLms.landmark):
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
             elif is_index_finger_turn_left(handLms.landmark):
                 if is_letter.is_t_gesture(handLms.landmark):
                     draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
-            else:
-                if is_letter.is_x_gesture(handLms.landmark): #X
-                    draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+            if is_letter.is_q(handLms.landmark): # Q
+                draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+
 
 
     cv2.imshow("Hand Gesture Recognition", image)
