@@ -1,6 +1,6 @@
 import cv2
 import mediapipe as mp
-import gestures
+import is_letter
 
 class Validator:
 	@staticmethod
@@ -35,7 +35,7 @@ while True:
 	if results.multi_hand_landmarks:
 		for handLms in results.multi_hand_landmarks:
 			if point1 != point2:
-				print(gestures.getPointsAngle(handLms.landmark[point1], handLms.landmark[point2]))
+				print(is_letter.getPointsAngle(handLms.landmark[point1], handLms.landmark[point2]))
 
 			draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
