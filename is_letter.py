@@ -2,9 +2,9 @@ import cv2
 import mediapipe as mp
 import math
 #
-cap = cv2.VideoCapture(0)
-hands = mp.solutions.hands.Hands(max_num_hands=1)
-draw = mp.solutions.drawing_utils
+# cap = cv2.VideoCapture(0)
+# hands = mp.solutions.hands.Hands(max_num_hands=1)
+# draw = mp.solutions.drawing_utils
 def getPointsAngle(landmark1, landmark2):
     x1 = landmark1.x
     y1 = landmark1.y
@@ -60,22 +60,10 @@ def is_b_gesture(hand_landmarks):
     x_threshold = 0.05
     y_threshold = 0.05
 
-    thumb_finger_x_4 = hand_landmarks[4].x
-    index_finger_x_8 = hand_landmarks[8].x
-    middle_finger_x_12 = hand_landmarks[12].x
-    ring_finger_x_16 = hand_landmarks[16].x
-    pinky_x_20 = hand_landmarks[20].x
-
-    thumb_finger_y_4 = hand_landmarks[4].y
     index_finger_y_8 = hand_landmarks[8].y
     middle_finger_y_12 = hand_landmarks[12].y
     ring_finger_y_16 = hand_landmarks[16].y
     pinky_y_20 = hand_landmarks[20].y
-
-    index_finger_x_7 = hand_landmarks[7].x
-    middle_finger_x_11 = hand_landmarks[11].x
-    ring_finger_x_15 = hand_landmarks[15].x
-    pinky_x_19 = hand_landmarks[19].x
 
     index_finger_y_7 = hand_landmarks[7].y
     middle_finger_y_11 = hand_landmarks[11].y
@@ -132,7 +120,6 @@ def is_d_gesture(hand_landmarks):
     ):
         return True, print('d')
 
-
 def is_e(landmark):
     if ((abs(getPointsAngle(landmark[6], landmark[8]) - 185) <= 25) and
             (abs(getPointsAngle(landmark[10], landmark[12]) - 185) <= 25) and
@@ -151,7 +138,6 @@ def is_e(landmark):
     ):
         return True, print('e')
     return False
-
 
 def is_g_gesture(hand_landmarks):
     x_threshold = 0.03
@@ -232,8 +218,6 @@ def is_m(landmark):
         return True, print('m')
     return False
 
-
-
 def is_n(landmark):
     if ((abs(getPointsAngle(landmark[6], landmark[8]) - 185) <= 25) and
             (abs(getPointsAngle(landmark[10], landmark[12]) - 185) <= 25) and
@@ -270,10 +254,8 @@ def is_p_gesture(hand_landmarks):
             (middle_finger_y_12 - middle_finger_y_11 <= y_threshold) and
             (abs(thumb_finger_x_4 - middle_finger_x_10 <= x_threshold)) and
             (abs(thumb_finger_y_4 - middle_finger_y_10 <= y_threshold)) and
-            (middle_finger_y_12 > thumb_finger_y_4)
-
-    ):
-        return 1, print('p')
+            (middle_finger_y_12 > thumb_finger_y_4)):
+        return True, print('p')
 
 
 def is_r(landmark):
@@ -284,7 +266,6 @@ def is_r(landmark):
             (abs(getPointsAngle(landmark[14], landmark[16]) - 165) <= 15) and
             (landmark[8].x > landmark[12].x)):return True, print('r')
     return False
-
 
 def is_s_gesture(hand_landmarks):
     y_threshold = 0.04  # Порог для определения примерной одной высоты
@@ -314,7 +295,6 @@ def is_t_gesture(hand_landmarks):
     x_threshold = 0.06  # Порог для определения примерной одной высоты
 
     index_finger_x_8 = hand_landmarks[8].x
-    thumb_finger_x_4 = hand_landmarks[4].x
     thumb_finger_x_3 = hand_landmarks[3].x
     index_finger_y_6 = hand_landmarks[6].y
     index_finger_x_6 = hand_landmarks[6].x
@@ -328,9 +308,7 @@ def is_t_gesture(hand_landmarks):
             (index_finger_x_8 < middle_finger_x_12) and
             (index_finger_x_8 < ring_finger_x_16) and
             (index_finger_x_8 < pinky_x_20) and
-            (hand_landmarks[8].x < hand_landmarks[7].x)
-
-    ):
+            (hand_landmarks[8].x < hand_landmarks[7].x)):
         return 1, print('t')
 
 
@@ -365,11 +343,8 @@ def is_v_gesture(hand_landmarks):
             (abs(middle_finger_y_12 - middle_finger_y_11 <= y_threshold)) and
             (abs(index_finger_y_8 - index_finger_y_7 <= y_threshold)) and
             (abs(middle_finger_y_12 - index_finger_y_8 <= y_threshold)) and
-            (abs(index_finger_y_8 - middle_finger_y_12 <= y_threshold))
-
-    ):
+            (abs(index_finger_y_8 - middle_finger_y_12 <= y_threshold))):
         return 1, print('v')
-
 
 def is_w_gesture(hand_landmarks):
     y_threshold = 0.05  # Порог для определения примерной одной высоты
@@ -393,11 +368,8 @@ def is_w_gesture(hand_landmarks):
             (index_finger_y_8 < index_finger_y_7) and
             (ring_finger_y_16 < ring_finger_y_15) and
             (abs(index_finger_y_8 - middle_finger_y_12 <= y_threshold)) and
-            (abs(middle_finger_y_12 - ring_finger_y_16 <= y_threshold))
-    ):
+            (abs(middle_finger_y_12 - ring_finger_y_16 <= y_threshold))):
         return True, print('w')
-
-
 
 def is_x(landmark):
         if ((abs(getPointsAngle(landmark[2], landmark[3]) - 30) <= 15) and
@@ -407,7 +379,6 @@ def is_x(landmark):
                 (abs(getPointsAngle(landmark[18], landmark[20]) - 215) <= 15)):
             return True, print('x')
         return False
-
 
 def is_y_gesture(hand_landmarks):
     y_threshold = 0.05
@@ -429,10 +400,8 @@ def is_y_gesture(hand_landmarks):
             (ring_finger_y_16 > index_finger_y_6) and
             (abs(pinky_y_19 - index_finger_y_6) <= y_threshold) and
             (abs(hand_landmarks[4].x - hand_landmarks[6].x) > x_threshold) and
-            (abs(hand_landmarks[20].x - hand_landmarks[6].x) > x_threshold)
-    ):
+            (abs(hand_landmarks[20].x - hand_landmarks[6].x) > x_threshold)):
         return True, print('y')
-
 
 def is_f_gesture(hand_landmarks):
     y_threshold = 0.08
@@ -446,15 +415,12 @@ def is_f_gesture(hand_landmarks):
     ring_finger_y_15 = hand_landmarks[15].y
     pinky_y_20 = hand_landmarks[20].y
 
-    if (
-            abs(index_finger_x_8 - thumb_finger_x_4) <= x_threshold and
+    if (abs(index_finger_x_8 - thumb_finger_x_4) <= x_threshold and
             abs(thumb_finger_y_4 - index_finger_y_8) <= y_threshold and
             abs(pinky_y_20 - ring_finger_y_15) <= y_threshold and
             abs(ring_finger_y_15 - middle_finger_y_11) <= y_threshold and
             abs(hand_landmarks[20].x - hand_landmarks[16].x) >= 0.08 and
-            abs(hand_landmarks[16].x - hand_landmarks[12].x) >= 0.08
-
-    ):
+            abs(hand_landmarks[16].x - hand_landmarks[12].x) >= 0.08):
         return 1, print("f")
 
 def is_k(landmark):
@@ -470,20 +436,3 @@ def is_q(landmark):
         return True, print('q')
     return False
 
-
-# while True:
-#     if cv2.waitKey(1) & 0xFF == ord('q'):
-#         break
-#
-#     success, image = cap.read()
-#     image = cv2.flip(image, 1)
-#     results = hands.process(image)
-#     if results.multi_hand_landmarks:
-#         for handLms in results.multi_hand_landmarks:
-#             if is_x_gesture(handLms.landmark):
-#                 draw.draw_landmarks(image, handLms, mp.solutions.hands.HAND_CONNECTIONS)
-#
-#     cv2.imshow("Hand Gesture Recognition", image)
-
-cap.release()
-cv2.destroyAllWindows()
