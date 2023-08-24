@@ -1,3 +1,4 @@
 # Hands
 This project is able to recognize one of the 24 gestures and translate it into a letter of the English alphabet
-(https://github.com/Faryno/Hands/assets/126193498/a5675900-3dfc-4104-8765-759f2c5bddd8)
+gestures:
+(https://github.com/Faryno/Hands/assets/126193498/63317453-b8c6-44a1-93fe-19704fba7564)
